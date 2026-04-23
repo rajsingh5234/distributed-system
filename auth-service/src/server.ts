@@ -1,8 +1,17 @@
+import app from './app';
 import { Config } from './config';
 
-function greet(name: string): string {
-  return `Hello from auth-service, ${name}!`;
-}
+const startServer = () => {
+  const PORT = Config.PORT;
 
-console.log(greet('distributed system'));
-console.log('Server running on port:', Config.PORT);
+  const server = app.listen(PORT, () => {
+    console.log(`Auth service is running on port ${PORT}`);
+  });
+
+  server.on('error', (error) => {
+    console.error(`Error starting auth service: ${error.message}`);
+    process.exit(1);
+  });
+};
+
+startServer();
