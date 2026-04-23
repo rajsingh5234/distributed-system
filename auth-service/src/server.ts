@@ -3,4 +3,5 @@ function greet(name: string): string {
 }
 
 console.log(greet('distributed system'))
+console.log('testing hook blocking')
 
