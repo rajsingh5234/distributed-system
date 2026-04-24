@@ -1,8 +1,17 @@
 import app from './app';
 import { Config } from './config';
 import logger from './config/logger';
+import connectDB from './config/db';
 
-const startServer = () => {
+const startServer = async () => {
+
+  try {
+    await connectDB();
+  } catch (error) {
+    logger.error(`Error connecting to database: ${(error as Error).message}`);
+    process.exit(1);
+  }
+
   const PORT = Config.PORT;
 
   const server = app.listen(PORT, () => {
