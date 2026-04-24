@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "ES2016",
     "module": "commonjs",
-    "rootDir": "./src",
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
@@ -11,6 +10,6 @@
     "declaration": true,
     "types": ["node", "jest"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/**/*"],
   "exclude": ["node_modules", "dist"]
 }
