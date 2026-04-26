@@ -1,0 +1,17 @@
+import mongoose from 'mongoose';
+import { Config } from '../../../../src/config';
+import { ITestDatabaseStrategy } from '../test-database';
+
+export class MongoStrategy implements ITestDatabaseStrategy {
+  async connect() {
+    await mongoose.connect(Config.MONGO_URI as string);
+  }
+
+  async disconnect() {
+    await mongoose.disconnect();
+  }
+
+  async cleanup() {
+    await mongoose.connection.db?.dropDatabase();
+  }
+}
