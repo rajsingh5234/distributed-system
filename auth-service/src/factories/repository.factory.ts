@@ -1,11 +1,7 @@
 import { Config } from '../config';
+import { DatabaseType } from '../types/db';
 import { IUserRepository } from '../repositories/user/IUserRepository';
 import { UserRepository } from '../repositories/user/UserRepository';
-
-export enum DatabaseType {
-  MONGO = 'mongo',
-  POSTGRES = 'postgres',
-}
 
 export class RepositoryFactory {
   static createUserRepository(): IUserRepository {
