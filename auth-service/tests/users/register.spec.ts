@@ -1,11 +1,11 @@
 import request from 'supertest';
 import app from '../../src/app';
 import { TestDatabase } from '../helpers/test-database/test-database';
-import { MongoStrategy } from '../helpers/test-database/strategies/mongo.strategy';
+import { TestDatabaseFactory } from '../helpers/test-database/test-database.factory';
 import { RepositoryFactory } from '../../src/factories/repository.factory';
 
 const userRepository = RepositoryFactory.createUserRepository();
-const db = new TestDatabase(new MongoStrategy());
+const db = new TestDatabase(TestDatabaseFactory.createStrategy());
 
 beforeAll(async () => await db.setup());
 afterEach(async () => await db.cleanup());
