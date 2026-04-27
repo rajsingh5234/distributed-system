@@ -1,9 +1,10 @@
 import createHttpError from 'http-errors';
-import { CreateUserDto } from '../dtos/CreateUserDto';
-import { IUser } from '../entities/user/iuser.entity';
-import { IUserRepository } from '../repositories/user/IUserRepository';
+import { CreateUserDto } from '../../dtos/CreateUserDto';
+import { IUser } from '../../entities/user/iuser.entity';
+import { IUserRepository } from '../../repositories/user/IUserRepository';
+import { IAuthService } from './IAuthService';
 
-export class AuthService {
+export class AuthService implements IAuthService {
   constructor(private userRepository: IUserRepository) {}
 
   async register(user: CreateUserDto): Promise<IUser> {

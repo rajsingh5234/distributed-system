@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { CreateUserDto } from '../dtos/CreateUserDto';
-import { AuthService } from '../services/AuthService';
+import { IAuthService } from '../services/auth/IAuthService';
 
 class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: IAuthService) {}
 
   async register(req: Request<object, object, CreateUserDto>, res: Response, next: NextFunction) {
     try {
