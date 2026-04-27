@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
 import { Config } from '../config';
-import { LoggerFactory } from '../factories/logger.factory';
-
-const logger = LoggerFactory.createLogger();
+import { logger } from '../factories/logger.factory';
 import { IDbConnection } from './IDbConnection';
 
 export class MongoDbConnection implements IDbConnection {
