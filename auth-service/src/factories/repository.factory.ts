@@ -8,8 +8,6 @@ export class RepositoryFactory {
     switch (Config.DB_TYPE as DatabaseType) {
       case DatabaseType.MONGO:
         return new UserRepository();
-      case DatabaseType.POSTGRES:
-        throw new Error('Postgres repository not implemented yet');
       default:
         throw new Error(`Unsupported database type: ${Config.DB_TYPE}`);
     }
