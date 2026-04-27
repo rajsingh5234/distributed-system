@@ -1,6 +1,8 @@
 import app from './app';
 import { Config } from './config';
-import logger from './config/logger';
+import { LoggerFactory } from './factories/logger.factory';
+
+const logger = LoggerFactory.createLogger();
 import connectDB from './database/db';
 
 const startServer = async () => {
