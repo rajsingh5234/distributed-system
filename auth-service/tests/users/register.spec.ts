@@ -3,9 +3,11 @@ import app from '../../src/app';
 import { TestDatabase } from '../helpers/test-database/test-database';
 import { TestDatabaseFactory } from '../helpers/test-database/test-database.factory';
 import { RepositoryFactory } from '../../src/factories/repository.factory';
+import { UserRole } from '../../src/types/user';
 
 const userRepository = RepositoryFactory.createUserRepository();
-const db = new TestDatabase(TestDatabaseFactory.createStrategy());
+const testDatabaseStrategy = TestDatabaseFactory.createStrategy();
+const db = new TestDatabase(testDatabaseStrategy);
 
 beforeAll(async () => await db.setup());
 afterEach(async () => await db.cleanup());
@@ -70,6 +72,24 @@ describe('POST /auth/register', () => {
       expect(savedUser?.firstName).toBe(user.firstName);
       expect(savedUser?.lastName).toBe(user.lastName);
       expect(savedUser?.email).toBe(user.email);
+    });
+
+    it('should assign a cutomer role to it', async () => {
+
+      // Arrange
+      const user = {
+        firstName: 'Raj',
+        lastName: 'Singh',
+        email: 'raj@gmail.com',
+        password: 'secret'
+      }
+
+      //Act
+      const response = await request(app).post('/auth/register').send(user);
+
+      //Assert
+      expect(response.body.user).toHaveProperty('role');
+      expect(response.body.user.role).toBe(UserRole.CUSTOMER);
     });
   });
 

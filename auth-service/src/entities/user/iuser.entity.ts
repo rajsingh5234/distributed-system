@@ -1,7 +1,10 @@
+import { UserRole } from '../../types/user';
+
 export interface IUser {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-  }
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+  email: string;
+  password: string;
+}
   
