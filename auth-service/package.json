@@ -26,6 +26,7 @@
   "description": "",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/bcryptjs": "^2.4.6",
     "@types/eslint__js": "^8.42.3",
     "@types/express": "^5.0.6",
     "@types/http-errors": "^2.0.5",
@@ -45,6 +46,7 @@
     "typescript-eslint": "^8.59.0"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "http-errors": "^2.0.1",
