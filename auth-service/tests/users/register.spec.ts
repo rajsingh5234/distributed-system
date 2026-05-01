@@ -23,7 +23,7 @@ describe('POST /auth/register', () => {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret'
+        password: 'secret@123'
       }
 
       //Act
@@ -40,7 +40,7 @@ describe('POST /auth/register', () => {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret'
+        password: 'secret@123'
       }
 
       //Act
@@ -57,7 +57,7 @@ describe('POST /auth/register', () => {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret'
+        password: 'secret@123'
       }
 
       //Act
@@ -82,7 +82,7 @@ describe('POST /auth/register', () => {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret'
+        password: 'secret@123'
       }
 
       // Act
@@ -101,7 +101,7 @@ describe('POST /auth/register', () => {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret'
+        password: 'secret@123'
       }
 
       // Act
@@ -118,7 +118,7 @@ describe('POST /auth/register', () => {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret'
+        password: 'secret@123'
       }
 
       //Act
@@ -136,7 +136,7 @@ describe('POST /auth/register', () => {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret'
+        password: 'secret@123'
       }
       
       // Act
@@ -149,10 +149,15 @@ describe('POST /auth/register', () => {
   });
 
   describe('Fields are missing', () => {
-    it.skip('should return 400 status code', async () => {
+    it('should return 400 status code if email field is missing', async () => {
 
       // Arrange
-      const user = {}
+      const user = {
+        firstName: 'Raj',
+        lastName: 'Singh',
+        email: '',
+        password: 'secret@123'
+      }
 
       // Act
       const response = await request(app).post('/auth/register').send(user);

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { CreateUserDto } from '../dtos/user/request/CreateUserDto';
+import { CreateUserDto } from '../validators/user/register.validator';
 import { toUserResponse } from '../mappers/user.mapper';
 import { IAuthService } from '../services/auth/IAuthService';
 
