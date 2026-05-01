@@ -12,6 +12,9 @@ export class MongoStrategy implements ITestDatabaseStrategy {
   }
 
   async cleanup() {
-    await mongoose.connection.db?.dropDatabase();
+    const collections = mongoose.connection.collections;
+    for (const key in collections) {
+      await collections[key].deleteMany({});
+    }
   }
 }

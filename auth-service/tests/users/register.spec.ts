@@ -128,6 +128,24 @@ describe('POST /auth/register', () => {
       expect(response.body.user).toHaveProperty('role');
       expect(response.body.user.role).toBe(UserRole.CUSTOMER);
     });
+
+    it('should return 400 status code if email is already registered', async () => {
+
+      // Arrange
+      const user = {
+        firstName: 'Raj',
+        lastName: 'Singh',
+        email: 'raj@gmail.com',
+        password: 'secret'
+      }
+      
+      // Act
+      await request(app).post('/auth/register').send(user);
+      const response = await request(app).post('/auth/register').send(user);
+
+      // Assert
+      expect(response.statusCode).toBe(400);
+    });
   });
 
   describe('Fields are missing', () => {
