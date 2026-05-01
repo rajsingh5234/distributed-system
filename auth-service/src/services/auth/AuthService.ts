@@ -1,9 +1,9 @@
 import createHttpError from 'http-errors';
-import { CreateUserDto } from '../../validators/user/register.validator';
-import { IUser } from '../../entities/user/iuser.entity';
-import { IUserRepository } from '../../repositories/user/IUserRepository';
-import { CreateUserData, UserRole } from '../../types/user';
-import { HashingService } from '../../utils/hashing';
+import { CreateUserDto } from '@/validators/user/register.validator';
+import { IUser } from '@/entities/user/iuser.entity';
+import { IUserRepository } from '@/repositories/user/IUserRepository';
+import { CreateUserData, UserRole } from '@/types/user';
+import { HashingService } from '@/utils/hashing';
 import { IAuthService } from './IAuthService';
 
 export class AuthService implements IAuthService {

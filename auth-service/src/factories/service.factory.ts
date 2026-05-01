@@ -1,5 +1,5 @@
-import { IAuthService } from '../services/auth/IAuthService';
-import { AuthService } from '../services/auth/AuthService';
+import { IAuthService } from '@/services/auth/IAuthService';
+import { AuthService } from '@/services/auth/AuthService';
 import { RepositoryFactory } from './repository.factory';
 
 export class ServiceFactory {

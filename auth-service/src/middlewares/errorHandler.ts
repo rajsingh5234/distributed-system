@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from 'http-errors';
-import { logger } from '../factories/logger.factory';
+import { logger } from '@/factories/logger.factory';
 
 const errorHandler = (
   err: HttpError,

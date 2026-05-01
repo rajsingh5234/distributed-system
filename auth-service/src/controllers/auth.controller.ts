@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { CreateUserDto } from '../validators/user/register.validator';
-import { toUserResponse } from '../mappers/user.mapper';
-import { IAuthService } from '../services/auth/IAuthService';
+import { CreateUserDto } from '@/validators/user/register.validator';
+import { toUserResponse } from '@/mappers/user.mapper';
+import { IAuthService } from '@/services/auth/IAuthService';
 
 class AuthController {
   constructor(private authService: IAuthService) {}

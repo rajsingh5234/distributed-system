@@ -1,5 +1,5 @@
-import { IUser } from '../../entities/user/iuser.entity';
-import { CreateUserData } from '../../types/user';
+import { IUser } from '@/entities/user/iuser.entity';
+import { CreateUserData } from '@/types/user';
 
 export interface IUserRepository {
   create(user: CreateUserData): Promise<IUser>;

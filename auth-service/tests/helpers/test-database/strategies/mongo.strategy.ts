@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Config } from '../../../../src/config';
+import { Config } from '@/config';
 import { ITestDatabaseStrategy } from '../test-database';
 
 export class MongoStrategy implements ITestDatabaseStrategy {

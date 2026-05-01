@@ -1,7 +1,7 @@
-import { Config } from '../config';
-import { IDbConnection } from '../database/IDbConnection';
-import { MongoDbConnection } from '../database/MongoDbConnection';
-import { DatabaseType } from '../types/db';
+import { Config } from '@/config';
+import { IDbConnection } from '@/database/IDbConnection';
+import { MongoDbConnection } from '@/database/MongoDbConnection';
+import { DatabaseType } from '@/types/db';
 
 export class ConnectionFactory {
   static createConnection(): IDbConnection {

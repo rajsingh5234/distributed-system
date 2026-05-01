@@ -1,5 +1,5 @@
-import { Config } from '../../../src/config';
-import { DatabaseType } from '../../../src/types/db';
+import { Config } from '@/config';
+import { DatabaseType } from '@/types/db';
 import { MongoStrategy } from './strategies/mongo.strategy';
 import { ITestDatabaseStrategy } from './test-database';
 

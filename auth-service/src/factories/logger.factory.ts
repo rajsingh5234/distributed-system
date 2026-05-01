@@ -1,5 +1,5 @@
-import { Logger } from '../logging/Logger';
-import { WinstonLogger } from '../logging/WinstonLogger';
+import { Logger } from '@/logging/Logger';
+import { WinstonLogger } from '@/logging/WinstonLogger';
 
 export class LoggerFactory {
   private static instance: Logger;

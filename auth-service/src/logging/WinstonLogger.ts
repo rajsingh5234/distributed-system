@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { Config } from '../config';
+import { Config } from '@/config';
 import { ILogger } from './ILogger';
 
 export class WinstonLogger implements ILogger {

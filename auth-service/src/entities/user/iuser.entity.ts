@@ -1,4 +1,4 @@
-import { UserRole } from '../../types/user';
+import { UserRole } from '@/types/user';
 
 export interface IUser {
   id: string;
@@ -8,4 +8,3 @@ export interface IUser {
   email: string;
   password: string;
 }
-  

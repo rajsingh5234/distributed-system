@@ -1,5 +1,5 @@
-import { UserResponseDto } from '../dtos/user/UserResponseDto';
-import { IUser } from '../entities/user/iuser.entity';
+import { UserResponseDto } from '@/dtos/user/UserResponseDto';
+import { IUser } from '@/entities/user/iuser.entity';
 
 export const toUserResponse = (user: IUser): UserResponseDto => ({
   id: user.id,

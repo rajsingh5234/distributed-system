@@ -1,10 +1,10 @@
 import request from 'supertest';
-import app from '../../src/app';
+import app from '@/app';
 import { TestDatabase } from '../helpers/test-database/test-database';
 import { TestDatabaseFactory } from '../helpers/test-database/test-database.factory';
-import { RepositoryFactory } from '../../src/factories/repository.factory';
-import { UserRole } from '../../src/types/user';
-import { HashingService } from '../../src/utils/hashing';
+import { RepositoryFactory } from '@/factories/repository.factory';
+import { UserRole } from '@/types/user';
+import { HashingService } from '@/utils/hashing';
 
 const userRepository = RepositoryFactory.createUserRepository();
 const testDatabaseStrategy = TestDatabaseFactory.createStrategy();
