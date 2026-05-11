@@ -9,10 +9,15 @@ class AuthController {
   async register(req: Request<object, object, CreateUserDto>, res: Response, next: NextFunction) {
     try {
       const { firstName, lastName, email, password } = req.body;
-      const user = await this.authService.register({ firstName, lastName, email, password });
+      const { user, accessToken, refreshToken } = await this.authService.register({ firstName, lastName, email, password });
+
+      const cookieOptions = { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' as const };
+      res.cookie('accessToken', accessToken, { ...cookieOptions, maxAge: 60 * 60 * 1000 }); // 1 hour
+      res.cookie('refreshToken', refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 }); // 7 days
+
       res.status(201).json({
         message: 'User registered successfully',
-        user: toUserResponse(user)
+        user: toUserResponse(user),
       });
     } catch (err) {
       next(err);

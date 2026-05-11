@@ -5,6 +5,7 @@ import { TestDatabaseFactory } from '../helpers/test-database/test-database.fact
 import { RepositoryFactory } from '@/factories/repository.factory';
 import { UserRole } from '@/types/user';
 import { HashingService } from '@/utils/hashing';
+import { TokenService } from '@/utils/token';
 
 const userRepository = RepositoryFactory.createUserRepository();
 const testDatabaseStrategy = TestDatabaseFactory.createStrategy();
@@ -145,6 +146,41 @@ describe('POST /auth/register', () => {
 
       // Assert
       expect(response.statusCode).toBe(400);
+    });
+
+    it('should set access token and refresh token in cookies', async () => {
+      // Arrange
+      const user = {
+        firstName: 'Raj',
+        lastName: 'Singh',
+        email: 'raj@gmail.com',
+        password: 'secret@123'
+      }
+      
+      // Act
+      
+      const response = await request(app).post('/auth/register').send(user);
+
+      // Assert
+      const cookies = response.headers['set-cookie'] as unknown as string[];
+
+      const accessTokenCookie = cookies.find((cookie: string) => cookie.startsWith('accessToken='));
+      const refreshTokenCookie = cookies.find((cookie: string) => cookie.startsWith('refreshToken='));
+
+      let accessToken;
+      if (accessTokenCookie) {
+        accessToken = accessTokenCookie.split(';')[0].split('=')[1];
+      }
+
+      let refreshToken;
+      if (refreshTokenCookie) {
+        refreshToken = refreshTokenCookie.split(';')[0].split('=')[1];
+      }
+
+      expect(accessToken).toBeDefined();
+      expect(refreshToken).toBeDefined();
+      expect(TokenService.verifyAccessToken(accessToken!)).toBeTruthy();
+      expect(TokenService.verifyRefreshToken(refreshToken!)).toBeTruthy();
     });
   });
 
