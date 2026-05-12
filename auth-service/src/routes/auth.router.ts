@@ -7,7 +7,8 @@ import { RegisterSchema } from '@/validators/user/register.validator';
 const router = Router();
 
 const authService = ServiceFactory.createAuthService();
-const authController = new AuthController(authService);
+const tokenService = ServiceFactory.createTokenService();
+const authController = new AuthController(authService, tokenService);
 
 router.post('/register', validateRequest(RegisterSchema), (req, res, next) => authController.register(req, res, next));
 

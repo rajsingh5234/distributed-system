@@ -5,9 +5,11 @@ import { TestDatabaseFactory } from '../helpers/test-database/test-database.fact
 import { RepositoryFactory } from '@/factories/repository.factory';
 import { UserRole } from '@/types/user';
 import { HashingService } from '@/utils/hashing';
-import { TokenService } from '@/utils/token';
+import { ServiceFactory } from '@/factories/service.factory';
 
 const userRepository = RepositoryFactory.createUserRepository();
+const refreshTokenRepository = RepositoryFactory.createRefreshTokenRepository();
+const tokenService = ServiceFactory.createTokenService();
 const testDatabaseStrategy = TestDatabaseFactory.createStrategy();
 const db = new TestDatabase(testDatabaseStrategy);
 
@@ -179,8 +181,34 @@ describe('POST /auth/register', () => {
 
       expect(accessToken).toBeDefined();
       expect(refreshToken).toBeDefined();
-      expect(TokenService.verifyAccessToken(accessToken!)).toBeTruthy();
-      expect(TokenService.verifyRefreshToken(refreshToken!)).toBeTruthy();
+      expect(tokenService.verifyAccessToken(accessToken!)).toBeTruthy();
+      expect(tokenService.verifyRefreshToken(refreshToken!)).toBeTruthy();
+    });
+
+    it('should store refresh token in database', async () => {
+      // Arrange
+      const user = {
+        firstName: 'Raj',
+        lastName: 'Singh',
+        email: 'raj@gmail.com',
+        password: 'secret@123'
+      }
+
+      // Act
+      const response = await request(app).post('/auth/register').send(user);
+
+      // Assert
+      const cookies = response.headers['set-cookie'] as unknown as string[];
+      const refreshTokenCookie = cookies.find((cookie: string) => cookie.startsWith('refreshToken='));
+      const refreshToken = refreshTokenCookie?.split(';')[0].split('=')[1];
+
+      const { jwtid } = tokenService.verifyRefreshToken(refreshToken!);
+      const savedRefreshToken = await refreshTokenRepository.findById(jwtid);
+
+      expect(savedRefreshToken).not.toBeNull();
+      expect(savedRefreshToken?.userId).toBe(response.body.user.id);
+      expect(savedRefreshToken?.expiresAt).toBeInstanceOf(Date);
+      expect(savedRefreshToken?.expiresAt.getTime()).toBeGreaterThan(Date.now());
     });
   });
 
