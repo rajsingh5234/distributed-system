@@ -3,6 +3,7 @@ import AuthController from '@/controllers/auth.controller';
 import { validateRequest } from '@/middlewares/validateRequest';
 import { ServiceFactory } from '@/factories/service.factory';
 import { RegisterSchema } from '@/validators/user/register.validator';
+import { LoginSchema } from '@/validators/user/login.validator';
 
 const router = Router();
 
@@ -11,5 +12,6 @@ const tokenService = ServiceFactory.createTokenService();
 const authController = new AuthController(authService, tokenService);
 
 router.post('/register', validateRequest(RegisterSchema), (req, res, next) => authController.register(req, res, next));
+router.post('/login', validateRequest(LoginSchema), (req, res, next) => authController.login(req, res, next));
 
 export default router;
