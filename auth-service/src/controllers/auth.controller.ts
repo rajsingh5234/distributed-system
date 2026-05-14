@@ -4,6 +4,7 @@ import { toUserResponse } from '@/mappers/user.mapper';
 import { IAuthService } from '@/services/auth/IAuthService';
 import { ITokenService } from '@/services/token/ITokenService';
 import { LoginUserDto } from '@/validators/user/login.validator';
+import { RefreshTokenPayload } from '@/types/token';
 
 class AuthController {
   constructor(
@@ -61,6 +62,26 @@ class AuthController {
       const user = await this.authService.self(req.auth!.sub);
       return res.status(200).json({ user: toUserResponse(user) });
     } catch(err) {
+      next(err);
+    }
+  }
+
+  async refresh(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { sub, jwtid } = req.auth as RefreshTokenPayload;
+
+      const user = await this.authService.self(sub);
+      const payload = { sub: user.id, role: user.role };
+
+      const { token: accessToken, maxAge: accessMaxAge } = this.tokenService.generateAccessToken(payload);
+      const { token: refreshToken, maxAge: refreshMaxAge } = await this.tokenService.rotateRefreshToken(jwtid, payload);
+
+      const cookieOptions = { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' as const };
+      res.cookie('accessToken', accessToken, { ...cookieOptions, maxAge: accessMaxAge });
+      res.cookie('refreshToken', refreshToken, { ...cookieOptions, maxAge: refreshMaxAge });
+
+      return res.status(200).json({ message: 'Token refreshed successfully' });
+    } catch (err) {
       next(err);
     }
   }

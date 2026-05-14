@@ -53,6 +53,11 @@ export class TokenService implements ITokenService {
     return { token, maxAge: TOKEN_EXPIRY.REFRESH_TOKEN_7D_MS };
   }
 
+  async rotateRefreshToken(oldJwtid: string, payload: TokenPayload): Promise<TokenResult> {
+    await this.refreshTokenRepository.deleteById(oldJwtid);
+    return await this.generateRefreshToken(payload);
+  }
+
   verifyAccessToken(token: string): TokenPayload {
     return jwt.verify(token, this.publicKey, { algorithms: ['RS256'] }) as unknown as TokenPayload;
   }
