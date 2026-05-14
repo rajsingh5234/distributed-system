@@ -5,4 +5,5 @@ import { CreateUserDto } from '@/validators/user/register.validator';
 export interface IAuthService {
   register(user: CreateUserDto): Promise<IUser>;
   login(credentials: LoginUserDto): Promise<IUser>;
+  self(id: string): Promise<IUser>;
 }

@@ -35,4 +35,12 @@ export class AuthService implements IAuthService {
 
       return user;
   }
+
+  async self(userId: string): Promise<IUser> {
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw createHttpError(404, 'User not found');
+    }
+    return user;
+  }
 }

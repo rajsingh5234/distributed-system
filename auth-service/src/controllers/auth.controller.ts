@@ -55,6 +55,15 @@ class AuthController {
       next(err);
     }
   }
+
+  async self(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await this.authService.self(req.auth!.sub);
+      return res.status(200).json({ user: toUserResponse(user) });
+    } catch(err) {
+      next(err);
+    }
+  }
 }
 
 export default AuthController;

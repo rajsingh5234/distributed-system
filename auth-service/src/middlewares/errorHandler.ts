@@ -1,14 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from 'http-errors';
+
 import { logger } from '@/factories/logger.factory';
 
 const errorHandler = (
-  err: HttpError,
+  err: HttpError & { status?: number },
   _req: Request,
   res: Response,
   _next: NextFunction
 ) => {
-  const statusCode = err.statusCode || 500;
+  const statusCode = err.statusCode || err.status || 500;
 
   logger.error(err.message);
 
