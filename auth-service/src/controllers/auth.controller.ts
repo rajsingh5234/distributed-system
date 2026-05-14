@@ -85,6 +85,21 @@ class AuthController {
       next(err);
     }
   }
+
+  async logout(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { jwtid } = req.auth as RefreshTokenPayload;
+      await this.tokenService.revokeRefreshToken(jwtid);
+
+      const cookieOptions = { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' as const };
+      res.clearCookie('accessToken', cookieOptions);
+      res.clearCookie('refreshToken', cookieOptions);
+
+      return res.status(200).json({ message: 'Logout successful' });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export default AuthController;

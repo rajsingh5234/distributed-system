@@ -6,6 +6,7 @@ import { RegisterSchema } from '@/validators/user/register.validator';
 import { LoginSchema } from '@/validators/user/login.validator';
 import authenticate from '@/middlewares/authenticate';
 import validateRefreshToken from '@/middlewares/validateRefreshToken';
+import parseRefreshToken from '@/middlewares/parseRefreshToken';
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.post('/register', validateRequest(RegisterSchema), (req, res, next) => au
 router.post('/login', validateRequest(LoginSchema), (req, res, next) => authController.login(req, res, next));
 router.get('/self', authenticate, (req, res, next) => authController.self(req, res, next));
 router.post('/refresh', validateRefreshToken, (req, res, next) => authController.refresh(req, res, next));
+router.post('/logout', authenticate, parseRefreshToken, (req, res, next) => authController.logout(req, res, next));
 
 export default router;

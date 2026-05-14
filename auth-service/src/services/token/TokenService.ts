@@ -58,6 +58,10 @@ export class TokenService implements ITokenService {
     return await this.generateRefreshToken(payload);
   }
 
+  async revokeRefreshToken(jwtid: string): Promise<void> {
+    await this.refreshTokenRepository.deleteById(jwtid);
+  }
+
   verifyAccessToken(token: string): TokenPayload {
     return jwt.verify(token, this.publicKey, { algorithms: ['RS256'] }) as unknown as TokenPayload;
   }
