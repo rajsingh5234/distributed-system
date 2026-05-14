@@ -6,7 +6,7 @@ import createJwksMock from 'mock-jwks';
 
 const testDatabaseStrategy = TestDatabaseFactory.createStrategy();
 const db = new TestDatabase(testDatabaseStrategy);
-const jwks = createJwksMock('http://localhost:3001');
+const jwks = createJwksMock('http://localhost:3000');
 
 beforeAll(async () => {
     jwks.start();
@@ -99,5 +99,16 @@ describe('GET /auth/self', () => {
             expect(response.body.user).not.toHaveProperty('password');
         })
 
+    })
+
+    describe('Missing token', () => {
+
+        it('should return 401 status code if token is not sent', async () => {
+            // Act
+            const response = await request(app).get('/auth/self');
+
+            // Assert
+            expect(response.statusCode).toBe(401);
+        });
     })
 })
