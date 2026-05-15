@@ -11,4 +11,8 @@ export class TenantRepository implements ITenantRepository {
   async findById(id: string): Promise<ITenant | null> {
     return await TenantModel.findById(id);
   }
+
+  async getAll(): Promise<ITenant[]> {
+    return await TenantModel.find();
+  }
 }
