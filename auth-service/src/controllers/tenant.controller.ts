@@ -15,6 +15,15 @@ class TenantController {
     }
   }
 
+  async getAll(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const tenants = await this.tenantService.findAll();
+      return res.status(200).json(tenants);
+    } catch (err) {
+      next(err);
+    }
+  }
+
 }
 
 export default TenantController;

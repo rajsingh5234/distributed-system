@@ -9,4 +9,8 @@ export class TenantService implements ITenantService {
   async create(data: CreateTenantDto): Promise<ITenant> {
     return await this.tenantRepository.create(data);
   }
+
+  async findAll(): Promise<ITenant[]> {
+    return await this.tenantRepository.findAll();
+  }
 }
