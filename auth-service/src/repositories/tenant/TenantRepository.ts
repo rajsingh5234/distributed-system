@@ -12,7 +12,7 @@ export class TenantRepository implements ITenantRepository {
     return await TenantModel.findById(id);
   }
 
-  async getAll(): Promise<ITenant[]> {
+  async findAll(): Promise<ITenant[]> {
     return await TenantModel.find();
   }
 }

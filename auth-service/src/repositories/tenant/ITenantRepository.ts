@@ -4,5 +4,5 @@ import { CreateTenantDto } from '@/validators/tenant/create.validator';
 export interface ITenantRepository {
   create(data: CreateTenantDto): Promise<ITenant>;
   findById(id: string): Promise<ITenant | null>;
-  getAll(): Promise<ITenant[]>;
+  findAll(): Promise<ITenant[]>;
 }
