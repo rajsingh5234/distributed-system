@@ -33,6 +33,15 @@ class TenantController {
     }
   }
 
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tenant = await this.tenantService.update(req.params.id as string, req.body);
+      return res.status(200).json(tenant);
+    } catch (err) {
+      next(err);
+    }
+  }
+
 }
 
 export default TenantController;
