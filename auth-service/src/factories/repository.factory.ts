@@ -4,6 +4,8 @@ import { IUserRepository } from '@/repositories/user/IUserRepository';
 import { UserRepository } from '@/repositories/user/UserRepository';
 import { IRefreshTokenRepository } from '@/repositories/refresh-token/IRefreshTokenRepository';
 import { RefreshTokenRepository } from '@/repositories/refresh-token/RefreshTokenRepository';
+import { ITenantRepository } from '@/repositories/tenant/ITenantRepository';
+import { TenantRepository } from '@/repositories/tenant/TenantRepository';
 
 export class RepositoryFactory {
   static createUserRepository(): IUserRepository {
@@ -19,6 +21,15 @@ export class RepositoryFactory {
     switch (Config.DB_TYPE as DatabaseType) {
       case DatabaseType.MONGO:
         return new RefreshTokenRepository();
+      default:
+        throw new Error(`Unsupported database type: ${Config.DB_TYPE}`);
+    }
+  }
+
+  static createTenantRepository(): ITenantRepository {
+    switch (Config.DB_TYPE as DatabaseType) {
+      case DatabaseType.MONGO:
+        return new TenantRepository();
       default:
         throw new Error(`Unsupported database type: ${Config.DB_TYPE}`);
     }
