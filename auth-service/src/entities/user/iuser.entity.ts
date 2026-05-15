@@ -7,4 +7,5 @@ export interface IUser {
   role: UserRole;
   email: string;
   password: string;
+  tenant?: string;
 }

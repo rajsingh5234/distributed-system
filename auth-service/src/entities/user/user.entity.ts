@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema<IUser>(
     role: { type: String, enum: Object.values(UserRole), required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    tenant: { type: mongoose.Schema.Types.ObjectId, ref: 'Tenant' },
   },
   {
     timestamps: true,
