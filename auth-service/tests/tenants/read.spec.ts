@@ -114,3 +114,125 @@ describe('GET /tenants', () => {
     });
 
 });
+
+describe('GET /tenants/:id', () => {
+
+    describe('Given valid request', () => {
+
+        it('should return 200 status code', async () => {
+            // Arrange
+            const createResponse = await request(app)
+                .post('/tenants')
+                .set('Cookie', [`accessToken=${getAccessToken()}`])
+                .send({ name: 'tenant name', address: 'tenant address' });
+            const { id } = createResponse.body;
+
+            // Act
+            const response = await request(app)
+                .get(`/tenants/${id}`)
+                .set('Cookie', [`accessToken=${getAccessToken()}`]);
+
+            // Assert
+            expect(response.statusCode).toBe(200);
+        });
+
+        it('should return valid json response', async () => {
+            // Arrange
+            const createResponse = await request(app)
+                .post('/tenants')
+                .set('Cookie', [`accessToken=${getAccessToken()}`])
+                .send({ name: 'tenant name', address: 'tenant address' });
+            const { id } = createResponse.body;
+
+            // Act
+            const response = await request(app)
+                .get(`/tenants/${id}`)
+                .set('Cookie', [`accessToken=${getAccessToken()}`]);
+
+            // Assert
+            expect(response.headers['content-type']).toMatch(/json/);
+        });
+
+        it('should return the correct tenant with all fields', async () => {
+            // Arrange
+            const tenant = { name: 'tenant name', address: 'tenant address' };
+            const createResponse = await request(app)
+                .post('/tenants')
+                .set('Cookie', [`accessToken=${getAccessToken()}`])
+                .send(tenant);
+            const { id } = createResponse.body;
+
+            // Act
+            const response = await request(app)
+                .get(`/tenants/${id}`)
+                .set('Cookie', [`accessToken=${getAccessToken()}`]);
+
+            // Assert
+            expect(response.body).toHaveProperty('id', id);
+            expect(response.body).toHaveProperty('name', tenant.name);
+            expect(response.body).toHaveProperty('address', tenant.address);
+        });
+
+    });
+
+    describe('Not found', () => {
+
+        it('should return 404 if tenant does not exist', async () => {
+            // Arrange
+            const nonExistentId = '000000000000000000000001';
+
+            // Act
+            const response = await request(app)
+                .get(`/tenants/${nonExistentId}`)
+                .set('Cookie', [`accessToken=${getAccessToken()}`]);
+
+            // Assert
+            expect(response.statusCode).toBe(404);
+        });
+
+    });
+
+    describe('Invalid params', () => {
+
+        it('should return 400 if id is not a valid ObjectId', async () => {
+            // Arrange
+            const invalidId = 'invalid-id';
+
+            // Act
+            const response = await request(app)
+                .get(`/tenants/${invalidId}`)
+                .set('Cookie', [`accessToken=${getAccessToken()}`]);
+
+            // Assert
+            expect(response.statusCode).toBe(400);
+            expect(response.body.errors).toBeInstanceOf(Array);
+            expect(response.body.errors[0].msg).toBe('Invalid tenant id');
+        });
+
+    });
+
+    describe('Authentication', () => {
+
+        it('should return 401 if user is not authenticated', async () => {
+            const nonExistentId = '000000000000000000000001';
+            const response = await request(app).get(`/tenants/${nonExistentId}`);
+            expect(response.statusCode).toBe(401);
+        });
+
+        it('should return 403 if user is not admin', async () => {
+            // Arrange
+            const nonExistentId = '000000000000000000000001';
+            const customerToken = jwks.token({ sub: 'test-user-id', role: UserRole.CUSTOMER });
+
+            // Act
+            const response = await request(app)
+                .get(`/tenants/${nonExistentId}`)
+                .set('Cookie', [`accessToken=${customerToken}`]);
+
+            // Assert
+            expect(response.statusCode).toBe(403);
+        });
+
+    });
+
+});
