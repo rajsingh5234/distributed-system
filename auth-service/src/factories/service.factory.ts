@@ -4,6 +4,8 @@ import { ITokenService } from '@/services/token/ITokenService';
 import { TokenService } from '@/services/token/TokenService';
 import { ITenantService } from '@/services/tenant/ITenantService';
 import { TenantService } from '@/services/tenant/TenantService';
+import { IUserService } from '@/services/user/IUserService';
+import { UserService } from '@/services/user/UserService';
 import { RepositoryFactory } from './repository.factory';
 
 export class ServiceFactory {
@@ -17,5 +19,9 @@ export class ServiceFactory {
 
   static createTenantService(): ITenantService {
     return new TenantService(RepositoryFactory.createTenantRepository());
+  }
+
+  static createUserService(): IUserService {
+    return new UserService(RepositoryFactory.createUserRepository());
   }
 }
