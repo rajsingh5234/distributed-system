@@ -3,6 +3,7 @@ import { IUser } from '@/entities/user/iuser.entity';
 import { IUserRepository } from '@/repositories/user/IUserRepository';
 import { HashingService } from '@/utils/hashing';
 import { CreateUserDto } from '@/validators/user/create.validator';
+import { UpdateUserDto } from '@/validators/user/update.validator';
 import { IUserService } from './IUserService';
 
 export class UserService implements IUserService {
@@ -22,6 +23,12 @@ export class UserService implements IUserService {
 
   async findById(id: string): Promise<IUser> {
     const user = await this.userRepository.findById(id);
+    if (!user) throw createHttpError(404, 'User not found');
+    return user;
+  }
+
+  async update(id: string, data: UpdateUserDto): Promise<IUser> {
+    const user = await this.userRepository.update(id, data);
     if (!user) throw createHttpError(404, 'User not found');
     return user;
   }

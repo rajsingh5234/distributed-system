@@ -32,6 +32,15 @@ class UserController {
       next(err);
     }
   }
+
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await this.userService.update(req.params.id as string, req.body);
+      return res.status(200).json(toUserResponse(user));
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export default UserController;
