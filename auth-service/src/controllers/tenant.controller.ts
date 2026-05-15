@@ -42,6 +42,15 @@ class TenantController {
     }
   }
 
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const tenant = await this.tenantService.delete(req.params.id as string);
+      return res.status(200).json({ id: tenant.id });
+    } catch (err) {
+      next(err);
+    }
+  }
+
 }
 
 export default TenantController;

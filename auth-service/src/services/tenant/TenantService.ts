@@ -27,4 +27,10 @@ export class TenantService implements ITenantService {
     if (!tenant) throw createHttpError(404, 'Tenant not found');
     return tenant;
   }
+
+  async delete(id: string): Promise<ITenant> {
+    const tenant = await this.tenantRepository.delete(id);
+    if (!tenant) throw createHttpError(404, 'Tenant not found');
+    return tenant;
+  }
 }

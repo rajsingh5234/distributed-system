@@ -20,4 +20,8 @@ export class TenantRepository implements ITenantRepository {
   async update(id: string, data: UpdateTenantDto): Promise<ITenant | null> {
     return await TenantModel.findByIdAndUpdate(id, data, { returnDocument: 'after' });
   }
+
+  async delete(id: string): Promise<ITenant | null> {
+    return await TenantModel.findByIdAndDelete(id);
+  }
 }

@@ -7,4 +7,5 @@ export interface ITenantRepository {
   findById(id: string): Promise<ITenant | null>;
   findAll(): Promise<ITenant[]>;
   update(id: string, data: UpdateTenantDto): Promise<ITenant | null>;
+  delete(id: string): Promise<ITenant | null>;
 }
