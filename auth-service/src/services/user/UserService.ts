@@ -32,4 +32,10 @@ export class UserService implements IUserService {
     if (!user) throw createHttpError(404, 'User not found');
     return user;
   }
+
+  async delete(id: string): Promise<IUser> {
+    const user = await this.userRepository.delete(id);
+    if (!user) throw createHttpError(404, 'User not found');
+    return user;
+  }
 }
