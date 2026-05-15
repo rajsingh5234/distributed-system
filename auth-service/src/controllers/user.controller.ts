@@ -14,6 +14,24 @@ class UserController {
       next(err);
     }
   }
+
+  async getAll(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const users = await this.userService.findAll();
+      return res.status(200).json(users.map(toUserResponse));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await this.userService.findById(req.params.id as string);
+      return res.status(200).json(toUserResponse(user));
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export default UserController;

@@ -15,4 +15,14 @@ export class UserService implements IUserService {
     const hashedPassword = await HashingService.hash(data.password);
     return await this.userRepository.create({ ...data, password: hashedPassword });
   }
+
+  async findAll(): Promise<IUser[]> {
+    return await this.userRepository.findAll();
+  }
+
+  async findById(id: string): Promise<IUser> {
+    const user = await this.userRepository.findById(id);
+    if (!user) throw createHttpError(404, 'User not found');
+    return user;
+  }
 }
