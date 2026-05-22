@@ -17,7 +17,7 @@ export class WinstonLogger implements ILogger {
           silent: Config.NODE_ENV === 'test',
           format: winston.format.combine(
             winston.format.timestamp(),
-            winston.format.json(),
+            winston.format.json()
           ),
         }),
         new winston.transports.File({
@@ -27,16 +27,16 @@ export class WinstonLogger implements ILogger {
           silent: Config.NODE_ENV === 'test',
           format: winston.format.combine(
             winston.format.timestamp(),
-            winston.format.json(),
+            winston.format.json()
           ),
         }),
         new winston.transports.Console({
           level: 'info',
-          silent: Config.NODE_ENV !== 'development',
+          silent: Config.NODE_ENV === 'test',
           format: winston.format.combine(
             winston.format.colorize(),
             winston.format.timestamp(),
-            winston.format.simple(),
+            winston.format.simple()
           ),
         }),
       ],
