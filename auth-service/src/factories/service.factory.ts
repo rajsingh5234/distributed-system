@@ -22,6 +22,6 @@ export class ServiceFactory {
   }
 
   static createUserService(): IUserService {
-    return new UserService(RepositoryFactory.createUserRepository());
+    return new UserService(RepositoryFactory.createUserRepository(), RepositoryFactory.createRefreshTokenRepository());
   }
 }

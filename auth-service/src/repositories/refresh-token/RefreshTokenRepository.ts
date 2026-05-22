@@ -16,4 +16,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
     await RefreshTokenModel.findByIdAndDelete(id);
   }
 
+  async deleteByUserId(userId: string): Promise<void> {
+    await RefreshTokenModel.deleteMany({ userId });
+  }
 }

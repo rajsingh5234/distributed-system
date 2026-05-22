@@ -1,13 +1,17 @@
 import createHttpError from 'http-errors';
 import { IUser } from '@/entities/user/iuser.entity';
 import { IUserRepository } from '@/repositories/user/IUserRepository';
+import { IRefreshTokenRepository } from '@/repositories/refresh-token/IRefreshTokenRepository';
 import { HashingService } from '@/utils/hashing';
 import { CreateUserDto } from '@/validators/user/create.validator';
 import { UpdateUserDto } from '@/validators/user/update.validator';
 import { IUserService } from './IUserService';
 
 export class UserService implements IUserService {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(
+    private userRepository: IUserRepository,
+    private refreshTokenRepository: IRefreshTokenRepository,
+  ) {}
 
   async create(data: CreateUserDto): Promise<IUser> {
     const existingUser = await this.userRepository.findByEmail(data.email);
@@ -36,6 +40,7 @@ export class UserService implements IUserService {
   async delete(id: string): Promise<IUser> {
     const user = await this.userRepository.delete(id);
     if (!user) throw createHttpError(404, 'User not found');
+    await this.refreshTokenRepository.deleteByUserId(id);
     return user;
   }
 }

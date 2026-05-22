@@ -8,6 +8,7 @@ import { UserRole } from '@/types/user';
 
 const jwks = createJwksMock('http://localhost:3000');
 const userRepository = RepositoryFactory.createUserRepository();
+const refreshTokenRepository = RepositoryFactory.createRefreshTokenRepository();
 
 const testDatabaseStrategy = TestDatabaseFactory.createStrategy();
 const db = new TestDatabase(testDatabaseStrategy);
@@ -102,6 +103,29 @@ describe('DELETE /users/:id', () => {
 
             // Assert
             expect(response.statusCode).toBe(404);
+        });
+
+        it('should delete all refresh tokens for the user', async () => {
+            // Arrange — register via /auth/register so a refresh token is created
+            const registerResponse = await request(app)
+                .post('/auth/register')
+                .send({ firstName: 'John', lastName: 'Doe', email: 'john@example.com', password: 'password123' });
+            const { id } = registerResponse.body.user;
+
+            // extract jwtid from the refresh token cookie
+            const cookies = (registerResponse.headers['set-cookie'] as unknown) as string[];
+            const refreshTokenCookie = cookies.find((c: string) => c.startsWith('refreshToken='));
+            const refreshToken = refreshTokenCookie!.split(';')[0].split('=')[1];
+            const payload = JSON.parse(Buffer.from(refreshToken.split('.')[1], 'base64').toString());
+
+            // Act
+            await request(app)
+                .delete(`/users/${id}`)
+                .set('Cookie', [`accessToken=${getAccessToken()}`]);
+
+            // Assert
+            const deletedToken = await refreshTokenRepository.findById(payload.jwtid);
+            expect(deletedToken).toBeNull();
         });
 
         it('should not delete other users', async () => {
