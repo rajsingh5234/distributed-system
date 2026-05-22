@@ -131,6 +131,27 @@ describe('POST /users', () => {
             expect(savedUser?.email).toBe(user.email);
         });
 
+        it('should create user with tenant when tenant is provided', async () => {
+            // Arrange
+            const tenantResponse = await request(app)
+                .post('/tenants')
+                .set('Cookie', [`accessToken=${getAccessToken()}`])
+                .send({ name: 'Test Tenant', address: 'Test Address' });
+            const { id: tenantId } = tenantResponse.body;
+
+            const user = { firstName: 'John', lastName: 'Doe', email: 'john@example.com', password: 'password123', tenant: tenantId };
+
+            // Act
+            const response = await request(app)
+                .post('/users')
+                .set('Cookie', [`accessToken=${getAccessToken()}`])
+                .send(user);
+
+            // Assert
+            const savedUser = await userRepository.findById(response.body.id);
+            expect(savedUser?.tenant?.toString()).toBe(tenantId);
+        });
+
         it('should store hashed password in db', async () => {
             // Arrange
             const user = { firstName: 'John', lastName: 'Doe', email: 'john@example.com', password: 'password123' };
@@ -388,6 +409,21 @@ describe('POST /users', () => {
             // Assert
             expect(response.statusCode).toBe(400);
             expect(response.body.errors[0].msg).toBe('Invalid email format');
+        });
+
+        it('should return 400 if tenant is not a valid ObjectId', async () => {
+            // Arrange
+            const user = { firstName: 'John', lastName: 'Doe', email: 'john@example.com', password: 'password123', tenant: 'invalid-id' };
+
+            // Act
+            const response = await request(app)
+                .post('/users')
+                .set('Cookie', [`accessToken=${getAccessToken()}`])
+                .send(user);
+
+            // Assert
+            expect(response.statusCode).toBe(400);
+            expect(response.body.errors[0].msg).toBe('Invalid tenant id');
         });
 
         it('should return 400 if role is admin', async () => {

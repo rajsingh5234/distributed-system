@@ -10,4 +10,5 @@ export interface CreateUserData {
   email: string;
   password: string;
   role: UserRole;
+  tenant?: string;
 }
