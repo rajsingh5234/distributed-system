@@ -10,7 +10,8 @@
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "jest --watch --runInBand",
+    "test": "jest --no-cache --coverage --all --runInBand",
+    "test:watch": "jest --watch --runInBand",
     "test:coverage": "jest --coverage",
     "prepare": "husky"
   },

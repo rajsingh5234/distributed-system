@@ -6,7 +6,9 @@ const config: Config = {
   testMatch: ['**/*.spec.ts'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   coverageDirectory: 'coverage',
-  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts'],
+  collectCoverage: true,
+  coverageProvider: 'v8',
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!tests/**', '!**/node_modules/**'],
   verbose: true,
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
