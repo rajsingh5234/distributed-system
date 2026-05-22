@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema<IUser>(
         delete ret.__v;
       },
     },
-  },
+  }
 );
 
 export default mongoose.model<IUser>('User', userSchema);

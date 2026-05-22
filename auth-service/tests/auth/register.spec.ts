@@ -20,14 +20,13 @@ afterAll(async () => await db.teardown());
 describe('POST /auth/register', () => {
   describe('Given all fields', () => {
     it('should return 201 status code', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       //Act
       const response = await request(app).post('/auth/register').send(user);
@@ -37,14 +36,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should return json response', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       //Act
       const response = await request(app).post('/auth/register').send(user);
@@ -54,14 +52,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should persist the user in database', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       //Act
       const response = await request(app).post('/auth/register').send(user);
@@ -79,14 +76,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should store hashed password in database', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -94,18 +90,22 @@ describe('POST /auth/register', () => {
       // Assert
       const savedUser = await userRepository.findById(response.body.user.id);
       expect(savedUser?.password).not.toBe(user.password);
-      expect(await HashingService.compare(user.password, savedUser?.password as string)).toBe(true);
+      expect(
+        await HashingService.compare(
+          user.password,
+          savedUser?.password as string
+        )
+      ).toBe(true);
     });
 
     it('should not return password in response', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -115,14 +115,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should assign a cutomer role to it', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       //Act
       const response = await request(app).post('/auth/register').send(user);
@@ -133,15 +132,14 @@ describe('POST /auth/register', () => {
     });
 
     it('should return 400 status code if email is already registered', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
-      
+        password: 'secret@123',
+      };
+
       // Act
       await request(app).post('/auth/register').send(user);
       const response = await request(app).post('/auth/register').send(user);
@@ -156,18 +154,22 @@ describe('POST /auth/register', () => {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
-      
+        password: 'secret@123',
+      };
+
       // Act
-      
+
       const response = await request(app).post('/auth/register').send(user);
 
       // Assert
       const cookies = response.headers['set-cookie'] as unknown as string[];
 
-      const accessTokenCookie = cookies.find((cookie: string) => cookie.startsWith('accessToken='));
-      const refreshTokenCookie = cookies.find((cookie: string) => cookie.startsWith('refreshToken='));
+      const accessTokenCookie = cookies.find((cookie: string) =>
+        cookie.startsWith('accessToken=')
+      );
+      const refreshTokenCookie = cookies.find((cookie: string) =>
+        cookie.startsWith('refreshToken=')
+      );
 
       let accessToken;
       if (accessTokenCookie) {
@@ -191,15 +193,17 @@ describe('POST /auth/register', () => {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
 
       // Assert
       const cookies = response.headers['set-cookie'] as unknown as string[];
-      const refreshTokenCookie = cookies.find((cookie: string) => cookie.startsWith('refreshToken='));
+      const refreshTokenCookie = cookies.find((cookie: string) =>
+        cookie.startsWith('refreshToken=')
+      );
       const refreshToken = refreshTokenCookie?.split(';')[0].split('=')[1];
 
       const { jwtid } = tokenService.verifyRefreshToken(refreshToken!);
@@ -208,20 +212,21 @@ describe('POST /auth/register', () => {
       expect(savedRefreshToken).not.toBeNull();
       expect(savedRefreshToken?.userId).toBe(response.body.user.id);
       expect(savedRefreshToken?.expiresAt).toBeInstanceOf(Date);
-      expect(savedRefreshToken?.expiresAt.getTime()).toBeGreaterThan(Date.now());
+      expect(savedRefreshToken?.expiresAt.getTime()).toBeGreaterThan(
+        Date.now()
+      );
     });
   });
 
   describe('Fields are missing', () => {
     it('should return 400 status code if email field is missing', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: '',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -231,14 +236,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should return an array of error messages if email is missing', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: '',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -250,14 +254,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should return an array of error messages if firstName is missing', async () => {
-
       // Arrange
       const user = {
         firstName: '',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -269,14 +272,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should return an array of error messages if lastName is missing', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: '',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -288,14 +290,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should return an array of error messages if password is missing', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: ''
-      }
+        password: '',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -303,18 +304,19 @@ describe('POST /auth/register', () => {
       // Assert
       expect(response.statusCode).toBe(400);
       expect(response.body.errors).toBeInstanceOf(Array);
-      expect(response.body.errors[0].msg).toBe('Password must be at least 8 characters');
+      expect(response.body.errors[0].msg).toBe(
+        'Password must be at least 8 characters'
+      );
     });
 
     it('should return 400 status code if firstName is missing', async () => {
-
       // Arrange
       const user = {
         firstName: '',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -324,14 +326,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should return 400 status code if lastName is missing', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: '',
         email: 'raj@gmail.com',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -341,14 +342,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should return 400 status code if password is missing', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: ''
-      }
+        password: '',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -360,14 +360,13 @@ describe('POST /auth/register', () => {
 
   describe('Fields are not in proper format', () => {
     it('should trim email field', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: ' raj@gmail.com ',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -379,14 +378,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should return 400 status code if email is not a valid email', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'not-an-email',
-        password: 'secret@123'
-      }
+        password: 'secret@123',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -396,14 +394,13 @@ describe('POST /auth/register', () => {
     });
 
     it('should return 400 status code if password length is less than 8 characters', async () => {
-
       // Arrange
       const user = {
         firstName: 'Raj',
         lastName: 'Singh',
         email: 'raj@gmail.com',
-        password: 'short'
-      }
+        password: 'short',
+      };
 
       // Act
       const response = await request(app).post('/auth/register').send(user);
@@ -411,6 +408,5 @@ describe('POST /auth/register', () => {
       // Assert
       expect(response.statusCode).toBe(400);
     });
-
   });
 });

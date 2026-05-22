@@ -4,7 +4,6 @@ import { logger } from './factories/logger.factory';
 import connectDB from './database/db';
 
 const startServer = async () => {
-
   try {
     await connectDB();
   } catch (error) {

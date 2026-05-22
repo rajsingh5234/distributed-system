@@ -5,7 +5,11 @@ import { CreateTenantDto } from '@/validators/tenant/create.validator';
 class TenantController {
   constructor(private tenantService: ITenantService) {}
 
-  async create(req: Request<object, object, CreateTenantDto>, res: Response, next: NextFunction) {
+  async create(
+    req: Request<object, object, CreateTenantDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const { name, address } = req.body;
       const tenant = await this.tenantService.create({ name, address });
@@ -35,7 +39,10 @@ class TenantController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     try {
-      const tenant = await this.tenantService.update(req.params.id as string, req.body);
+      const tenant = await this.tenantService.update(
+        req.params.id as string,
+        req.body
+      );
       return res.status(200).json(tenant);
     } catch (err) {
       next(err);
@@ -50,7 +57,6 @@ class TenantController {
       next(err);
     }
   }
-
 }
 
 export default TenantController;

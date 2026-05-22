@@ -15,7 +15,10 @@ const refreshTokenSchema = new mongoose.Schema(
         delete ret.__v;
       },
     },
-  },
+  }
 );
 
-export default mongoose.model<IRefreshToken>('RefreshToken', refreshTokenSchema);
+export default mongoose.model<IRefreshToken>(
+  'RefreshToken',
+  refreshTokenSchema
+);

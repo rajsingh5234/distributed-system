@@ -1,8 +1,8 @@
-import { Config } from "@/config";
-import { expressjwt, Request } from "express-jwt";
-import { Jwt } from "jsonwebtoken";
-import { RepositoryFactory } from "@/factories/repository.factory";
-import { logger } from "@/factories/logger.factory";
+import { Config } from '@/config';
+import { expressjwt, Request } from 'express-jwt';
+import { Jwt } from 'jsonwebtoken';
+import { RepositoryFactory } from '@/factories/repository.factory';
+import { logger } from '@/factories/logger.factory';
 
 if (!Config.REFRESH_TOKEN_SECRET) {
   throw new Error('REFRESH_TOKEN_SECRET is not set in environment variables');
@@ -21,7 +21,9 @@ export default expressjwt({
 
   async isRevoked(_req: Request, token: Jwt | undefined): Promise<boolean> {
     try {
-      const payload = token?.payload as { jwtid?: string; sub?: string } | undefined;
+      const payload = token?.payload as
+        | { jwtid?: string; sub?: string }
+        | undefined;
       const jwtid = payload?.jwtid;
       const sub = payload?.sub;
 

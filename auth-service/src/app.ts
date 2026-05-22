@@ -6,7 +6,9 @@ import errorHandler from './middlewares/errorHandler';
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, '..', 'public'), { dotfiles: 'allow' }));
+app.use(
+  express.static(path.join(__dirname, '..', 'public'), { dotfiles: 'allow' })
+);
 app.use(express.json());
 app.use(cookieParser());
 

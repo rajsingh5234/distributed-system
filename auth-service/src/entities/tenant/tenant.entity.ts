@@ -15,7 +15,7 @@ const tenantSchema = new mongoose.Schema(
         delete ret.__v;
       },
     },
-  },
+  }
 );
 
 export default mongoose.model<ITenant>('Tenant', tenantSchema);

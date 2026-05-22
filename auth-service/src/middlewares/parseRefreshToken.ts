@@ -1,5 +1,5 @@
-import { Config } from "@/config";
-import { expressjwt, Request } from "express-jwt";
+import { Config } from '@/config';
+import { expressjwt, Request } from 'express-jwt';
 
 if (!Config.REFRESH_TOKEN_SECRET) {
   throw new Error('REFRESH_TOKEN_SECRET is not set in environment variables');

@@ -8,6 +8,9 @@ const jwk = rsaPemToJwk(privatePem, { use: 'sig' }, 'public');
 
 const jwks = { keys: [jwk] };
 
-fs.writeFileSync(path.resolve('public/.well-known/jwks.json'), JSON.stringify(jwks, null, 2));
+fs.writeFileSync(
+  path.resolve('public/.well-known/jwks.json'),
+  JSON.stringify(jwks, null, 2)
+);
 
 console.log('jwks.json written to public/.well-known/jwks.json');

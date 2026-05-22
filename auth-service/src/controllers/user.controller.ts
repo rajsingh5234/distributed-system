@@ -6,7 +6,11 @@ import { CreateUserDto } from '@/validators/user/create.validator';
 class UserController {
   constructor(private userService: IUserService) {}
 
-  async create(req: Request<object, object, CreateUserDto>, res: Response, next: NextFunction) {
+  async create(
+    req: Request<object, object, CreateUserDto>,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const user = await this.userService.create(req.body);
       return res.status(201).json(toUserResponse(user));
@@ -35,7 +39,10 @@ class UserController {
 
   async update(req: Request, res: Response, next: NextFunction) {
     try {
-      const user = await this.userService.update(req.params.id as string, req.body);
+      const user = await this.userService.update(
+        req.params.id as string,
+        req.body
+      );
       return res.status(200).json(toUserResponse(user));
     } catch (err) {
       next(err);

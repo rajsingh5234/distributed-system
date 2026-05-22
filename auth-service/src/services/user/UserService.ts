@@ -10,7 +10,7 @@ import { IUserService } from './IUserService';
 export class UserService implements IUserService {
   constructor(
     private userRepository: IUserRepository,
-    private refreshTokenRepository: IRefreshTokenRepository,
+    private refreshTokenRepository: IRefreshTokenRepository
   ) {}
 
   async create(data: CreateUserDto): Promise<IUser> {
@@ -18,7 +18,10 @@ export class UserService implements IUserService {
     if (existingUser) throw createHttpError(400, 'Email already exists');
 
     const hashedPassword = await HashingService.hash(data.password);
-    return await this.userRepository.create({ ...data, password: hashedPassword });
+    return await this.userRepository.create({
+      ...data,
+      password: hashedPassword,
+    });
   }
 
   async findAll(): Promise<IUser[]> {
