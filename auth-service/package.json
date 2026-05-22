@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "dist/src/server.js",
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
     "start": "node dist/src/server.js",
     "dev": "NODE_ENV=development nodemon --exec ts-node src/server.ts",
     "lint": "eslint src/**/*.ts",

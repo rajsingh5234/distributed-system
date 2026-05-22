@@ -22,9 +22,7 @@ router.post(
   validateRequest(CreateTenantSchema),
   (req, res, next) => tenantController.create(req, res, next)
 );
-router.get('/', authenticate, authorize(UserRole.ADMIN), (req, res, next) =>
-  tenantController.getAll(req, res, next)
-);
+router.get('/', (req, res, next) => tenantController.getAll(req, res, next));
 router.get(
   '/:id',
   authenticate,

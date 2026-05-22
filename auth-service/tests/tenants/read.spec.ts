@@ -26,17 +26,13 @@ const getAccessToken = () =>
 describe('GET /tenants', () => {
   describe('Given valid request', () => {
     it('should return 200 status code', async () => {
-      const response = await request(app)
-        .get('/tenants')
-        .set('Cookie', [`accessToken=${getAccessToken()}`]);
+      const response = await request(app).get('/tenants');
 
       expect(response.statusCode).toBe(200);
     });
 
     it('should return valid json response', async () => {
-      const response = await request(app)
-        .get('/tenants')
-        .set('Cookie', [`accessToken=${getAccessToken()}`]);
+      const response = await request(app).get('/tenants');
 
       expect(response.headers['content-type']).toMatch(/json/);
     });
@@ -54,9 +50,7 @@ describe('GET /tenants', () => {
         .send({ name: 'Tenant 2', address: 'Address 2' });
 
       // Act
-      const response = await request(app)
-        .get('/tenants')
-        .set('Cookie', [`accessToken=${getAccessToken()}`]);
+      const response = await request(app).get('/tenants');
 
       // Assert
       expect(Array.isArray(response.body)).toBe(true);
@@ -71,9 +65,7 @@ describe('GET /tenants', () => {
         .send({ name: 'Tenant 1', address: 'Address 1' });
 
       // Act
-      const response = await request(app)
-        .get('/tenants')
-        .set('Cookie', [`accessToken=${getAccessToken()}`]);
+      const response = await request(app).get('/tenants');
 
       // Assert
       const tenant = response.body[0];
@@ -83,32 +75,16 @@ describe('GET /tenants', () => {
     });
 
     it('should return an empty array when no tenants exist', async () => {
-      const response = await request(app)
-        .get('/tenants')
-        .set('Cookie', [`accessToken=${getAccessToken()}`]);
+      const response = await request(app).get('/tenants');
 
       expect(Array.isArray(response.body)).toBe(true);
       expect(response.body).toHaveLength(0);
     });
-  });
 
-  describe('Authentication', () => {
-    it('should return 401 if user is not authenticated', async () => {
+    it('should be accessible without authentication', async () => {
       const response = await request(app).get('/tenants');
-      expect(response.statusCode).toBe(401);
-    });
 
-    it('should return 403 if user is not admin', async () => {
-      const customerToken = jwks.token({
-        sub: 'test-user-id',
-        role: UserRole.CUSTOMER,
-      });
-
-      const response = await request(app)
-        .get('/tenants')
-        .set('Cookie', [`accessToken=${customerToken}`]);
-
-      expect(response.statusCode).toBe(403);
+      expect(response.statusCode).toBe(200);
     });
   });
 });
