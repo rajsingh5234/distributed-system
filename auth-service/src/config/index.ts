@@ -12,4 +12,5 @@ export const Config = {
   DB_TYPE: process.env.DB_TYPE,
   REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET,
   JWKS_URI: process.env.JWKS_URI,
+  PRIVATE_KEY: process.env.PRIVATE_KEY,
 };

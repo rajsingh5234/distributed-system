@@ -11,7 +11,7 @@ const TOKEN_EXPIRY = {
   REFRESH_TOKEN_7D_MS: 7 * 24 * 60 * 60 * 1000,
 };
 
-const loadKey = (filename: string): string => {
+const loadKeyFromFile = (filename: string): string => {
   const keyPath = path.resolve(`certs/${filename}`);
   if (!fs.existsSync(keyPath)) {
     throw new Error(
@@ -27,8 +27,8 @@ export class TokenService implements ITokenService {
   private refreshTokenSecret: string;
 
   constructor(private refreshTokenRepository: IRefreshTokenRepository) {
-    this.privateKey = loadKey('private.pem');
-    this.publicKey = loadKey('public.pem');
+    this.privateKey = Config.PRIVATE_KEY ?? loadKeyFromFile('private.pem');
+    this.publicKey = loadKeyFromFile('public.pem');
     if (!Config.REFRESH_TOKEN_SECRET) {
       throw new Error(
         'REFRESH_TOKEN_SECRET is not set in environment variables'
