@@ -4,9 +4,13 @@ on:
     pull_request:
         branches:
             - main
+        paths:
+            - 'auth-service/**'
     push:
         branches:
             - main
+        paths:
+            - 'auth-service/**'
 
 jobs:
     build-and-test:
