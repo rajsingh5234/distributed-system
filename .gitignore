@@ -21,10 +21,10 @@ out/
 .env.development
 .env.test
 .env.production
-*.pem
 *.key
 *.cert
-certs/
+**/certs/private.pem
+**/certs/*.key
 
 # ─── Logs ────────────────────────────────────────────────────────────────────
 logs/
