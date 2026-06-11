@@ -1,8 +1,23 @@
 import { LockFilled, LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Card, Checkbox, Flex, Form, Input, Layout, Space } from 'antd';
+import { useMutation } from '@tanstack/react-query';
+import { Alert, Button, Card, Checkbox, Flex, Form, Input, Layout, Space } from 'antd';
 import Logo from '../../components/icons/Logo';
+import { login } from '../../http/api';
 
 const Login = () => {
+
+    const { mutate, isPending, isError } = useMutation({
+        mutationKey: ['login'],
+        mutationFn: (credentials: { email: string; password: string }) => login(credentials),
+        onSuccess: (response) => {
+            console.log(response.data.message);
+        },
+    });
+
+    const onFinish = (values: { username: string; password: string }) => {
+        mutate({ email: values.username, password: values.password });
+    };
+
     return (
         <Layout style={{ height: '100vh', display: 'grid', placeItems: 'center' }}>
             <Flex vertical align="center" gap="large">
@@ -22,7 +37,12 @@ const Login = () => {
                             Sign in
                         </Space>
                     }>
-                    <Form initialValues={{ remember: true }}>
+                    <Form initialValues={{ remember: true }} onFinish={onFinish}>
+                        {isError && (
+                            <Form.Item>
+                                <Alert type="error" description="Invalid email or password" />
+                            </Form.Item>
+                        )}
                         <Form.Item
                             name="username"
                             rules={[
@@ -45,7 +65,7 @@ const Login = () => {
                             <a id="login-form-forgot" href="">Forgot password</a>
                         </Flex>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" style={{ width: '100%' }}>
+                            <Button type="primary" htmlType="submit" loading={isPending} style={{ width: '100%' }}>
                                 Log in
                             </Button>
                         </Form.Item>
