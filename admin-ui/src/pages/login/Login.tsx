@@ -3,8 +3,10 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Alert, Button, Card, Checkbox, Flex, Form, Input, Layout, Space } from 'antd';
 import Logo from '../../components/icons/Logo';
 import { login, self } from '../../http/api';
+import { useAuthStore } from '../../store';
 
 const Login = () => {
+    const { setUser } = useAuthStore();
 
     const { refetch: fetchSelf } = useQuery({
         queryKey: ['self'],
@@ -17,7 +19,7 @@ const Login = () => {
         mutationFn: (credentials: { email: string; password: string }) => login(credentials),
         onSuccess: async () => {
             const { data } = await fetchSelf();
-            console.log(data);
+            setUser(data.data);
         },
     });
 
