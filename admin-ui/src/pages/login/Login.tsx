@@ -2,11 +2,13 @@ import { LockFilled, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Alert, Button, Card, Checkbox, Flex, Form, Input, Layout, Space } from 'antd';
 import Logo from '../../components/icons/Logo';
-import { login, self } from '../../http/api';
+import { login, logout, self } from '../../http/api';
 import { useAuthStore } from '../../store';
+import { usePermission } from '../../hooks/usePermission';
 
 const Login = () => {
-    const { setUser } = useAuthStore();
+    const { setUser, logout: logoutFromStore } = useAuthStore();
+    const { isAllowed } = usePermission();
 
     const { refetch: fetchSelf } = useQuery({
         queryKey: ['self'],
@@ -14,12 +16,23 @@ const Login = () => {
         enabled: false,
     });
 
+    const { mutate: logoutMutate } = useMutation({
+        mutationKey: ['logout'],
+        mutationFn: logout,
+        onSuccess: () => logoutFromStore(),
+    });
+
     const { mutate, isPending, isError } = useMutation({
         mutationKey: ['login'],
         mutationFn: (credentials: { email: string; password: string }) => login(credentials),
         onSuccess: async () => {
             const { data } = await fetchSelf();
-            setUser(data.data);
+            const user = data.data.user;
+            if (!isAllowed(user)) {
+                logoutMutate();
+                return;
+            }
+            setUser(user);
         },
     });
 
