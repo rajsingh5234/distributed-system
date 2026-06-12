@@ -43,6 +43,10 @@ jobs:
                   REFRESH_TOKEN_SECRET: test_refresh_token_secret
                   JWKS_URI: ${{ secrets.JWKS_URI }}
                   PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+                  ADMIN_EMAIL: raj@gmail.com
+                  ADMIN_PASSWORD: "12345678"
+                  ADMIN_FIRST_NAME: Raj
+                  ADMIN_LAST_NAME: Singh
 
     build-and-push-docker:
         name: Build and Push Docker Image
