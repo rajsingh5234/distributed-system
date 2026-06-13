@@ -100,7 +100,7 @@ describe('POST /tenants', () => {
 
       // Assert
       expect(response.statusCode).toBe(401);
-      const tenants = await tenantRepository.findAll();
+      const [tenants] = await tenantRepository.findAll({ currentPage: 1, perPage: 100 });
       expect(tenants).toHaveLength(0);
     });
 
@@ -120,7 +120,7 @@ describe('POST /tenants', () => {
 
       // Assert
       expect(response.statusCode).toBe(403);
-      const tenants = await tenantRepository.findAll();
+      const [tenants] = await tenantRepository.findAll({ currentPage: 1, perPage: 100 });
       expect(tenants).toHaveLength(0);
     });
   });

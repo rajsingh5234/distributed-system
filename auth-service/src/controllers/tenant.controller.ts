@@ -19,10 +19,14 @@ class TenantController {
     }
   }
 
-  async getAll(_req: Request, res: Response, next: NextFunction) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    const currentPage = Number(req.query.currentPage) || 1;
+    const perPage = Number(req.query.perPage) || 6;
+    const q = req.query.q as string | undefined;
+
     try {
-      const tenants = await this.tenantService.findAll();
-      return res.status(200).json(tenants);
+      const [tenants, total] = await this.tenantService.findAll({ currentPage, perPage, q });
+      return res.status(200).json({ currentPage, perPage, total, data: tenants });
     } catch (err) {
       next(err);
     }

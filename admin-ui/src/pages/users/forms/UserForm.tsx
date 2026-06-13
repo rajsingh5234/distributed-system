@@ -89,7 +89,7 @@ const UserForm = ({ isEditMode = false }: { isEditMode: boolean }) => {
                                         style={{ width: '100%' }}
                                         allowClear={true}
                                         placeholder="Select restaurant"
-                                        options={(tenants as Tenant[] | undefined)?.map((tenant) => ({
+                                        options={(tenants as { data: Tenant[] } | undefined)?.data?.map((tenant) => ({
                                             label: tenant.name,
                                             value: tenant.id,
                                         }))}

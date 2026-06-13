@@ -53,8 +53,8 @@ describe('GET /tenants', () => {
       const response = await request(app).get('/tenants');
 
       // Assert
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body).toHaveLength(2);
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data).toHaveLength(2);
     });
 
     it('should return tenants with correct fields', async () => {
@@ -68,7 +68,7 @@ describe('GET /tenants', () => {
       const response = await request(app).get('/tenants');
 
       // Assert
-      const tenant = response.body[0];
+      const tenant = response.body.data[0];
       expect(tenant).toHaveProperty('id');
       expect(tenant).toHaveProperty('name', 'Tenant 1');
       expect(tenant).toHaveProperty('address', 'Address 1');
@@ -77,8 +77,21 @@ describe('GET /tenants', () => {
     it('should return an empty array when no tenants exist', async () => {
       const response = await request(app).get('/tenants');
 
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body).toHaveLength(0);
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data).toHaveLength(0);
+    });
+
+    it('should return pagination metadata', async () => {
+      await request(app)
+        .post('/tenants')
+        .set('Cookie', [`accessToken=${getAccessToken()}`])
+        .send({ name: 'Tenant 1', address: 'Address 1' });
+
+      const response = await request(app).get('/tenants?currentPage=1&perPage=6');
+
+      expect(response.body).toHaveProperty('total', 1);
+      expect(response.body).toHaveProperty('currentPage', 1);
+      expect(response.body).toHaveProperty('perPage', 6);
     });
 
     it('should be accessible without authentication', async () => {

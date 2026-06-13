@@ -1,11 +1,12 @@
 import { ITenant } from '@/entities/tenant/itenant.entity';
+import { TenantQueryParams } from '@/types/tenant';
 import { CreateTenantDto } from '@/validators/tenant/create.validator';
 import { UpdateTenantDto } from '@/validators/tenant/update.validator';
 
 export interface ITenantRepository {
   create(data: CreateTenantDto): Promise<ITenant>;
   findById(id: string): Promise<ITenant | null>;
-  findAll(): Promise<ITenant[]>;
+  findAll(params: TenantQueryParams): Promise<[ITenant[], number]>;
   update(id: string, data: UpdateTenantDto): Promise<ITenant | null>;
   delete(id: string): Promise<ITenant | null>;
 }

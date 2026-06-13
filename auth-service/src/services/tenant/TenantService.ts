@@ -1,5 +1,6 @@
 import { ITenant } from '@/entities/tenant/itenant.entity';
 import { ITenantRepository } from '@/repositories/tenant/ITenantRepository';
+import { TenantQueryParams } from '@/types/tenant';
 import { CreateTenantDto } from '@/validators/tenant/create.validator';
 import { UpdateTenantDto } from '@/validators/tenant/update.validator';
 import { ITenantService } from './ITenantService';
@@ -12,8 +13,8 @@ export class TenantService implements ITenantService {
     return await this.tenantRepository.create(data);
   }
 
-  async findAll(): Promise<ITenant[]> {
-    return await this.tenantRepository.findAll();
+  async findAll(params: TenantQueryParams): Promise<[ITenant[], number]> {
+    return await this.tenantRepository.findAll(params);
   }
 
   async findById(id: string): Promise<ITenant> {
