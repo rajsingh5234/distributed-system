@@ -64,8 +64,8 @@ describe('GET /users', () => {
         .set('Cookie', [`accessToken=${getAccessToken()}`]);
 
       // Assert
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body).toHaveLength(2);
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data).toHaveLength(2);
     });
 
     it('should return users with correct fields', async () => {
@@ -78,7 +78,7 @@ describe('GET /users', () => {
         .set('Cookie', [`accessToken=${getAccessToken()}`]);
 
       // Assert
-      const user = response.body[0];
+      const user = response.body.data[0];
       expect(user).toHaveProperty('id');
       expect(user).toHaveProperty('firstName', 'John');
       expect(user).toHaveProperty('lastName', 'Doe');
@@ -96,7 +96,7 @@ describe('GET /users', () => {
         .set('Cookie', [`accessToken=${getAccessToken()}`]);
 
       // Assert
-      expect(response.body[0]).not.toHaveProperty('password');
+      expect(response.body.data[0]).not.toHaveProperty('password');
     });
 
     it('should return an empty array when no users exist', async () => {
@@ -104,8 +104,21 @@ describe('GET /users', () => {
         .get('/users')
         .set('Cookie', [`accessToken=${getAccessToken()}`]);
 
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body).toHaveLength(0);
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data).toHaveLength(0);
+    });
+
+    it('should return pagination metadata', async () => {
+      await createUser({ email: 'user1@example.com' });
+      await createUser({ email: 'user2@example.com' });
+
+      const response = await request(app)
+        .get('/users?currentPage=1&perPage=6')
+        .set('Cookie', [`accessToken=${getAccessToken()}`]);
+
+      expect(response.body).toHaveProperty('total', 2);
+      expect(response.body).toHaveProperty('currentPage', 1);
+      expect(response.body).toHaveProperty('perPage', 6);
     });
   });
 

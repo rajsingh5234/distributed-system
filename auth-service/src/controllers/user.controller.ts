@@ -19,10 +19,20 @@ class UserController {
     }
   }
 
-  async getAll(_req: Request, res: Response, next: NextFunction) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    const currentPage = Number(req.query.currentPage) || 1;
+    const perPage = Number(req.query.perPage) || 6;
+    const q = req.query.q as string | undefined;
+    const role = req.query.role as string | undefined;
+
     try {
-      const users = await this.userService.findAll();
-      return res.status(200).json(users.map(toUserResponse));
+      const [users, total] = await this.userService.findAll({ currentPage, perPage, q, role });
+      return res.status(200).json({
+        currentPage,
+        perPage,
+        total,
+        data: users.map(toUserResponse),
+      });
     } catch (err) {
       next(err);
     }

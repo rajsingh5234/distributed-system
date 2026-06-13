@@ -12,3 +12,10 @@ export interface CreateUserData {
   role: UserRole;
   tenant?: string;
 }
+
+export interface UserQueryParams {
+  currentPage: number;
+  perPage: number;
+  q?: string;
+  role?: string;
+}

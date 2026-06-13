@@ -6,6 +6,7 @@ import { HashingService } from '@/utils/hashing';
 import { CreateUserDto } from '@/validators/user/create.validator';
 import { UpdateUserDto } from '@/validators/user/update.validator';
 import { IUserService } from './IUserService';
+import { UserQueryParams } from '@/types/user';
 
 export class UserService implements IUserService {
   constructor(
@@ -24,8 +25,8 @@ export class UserService implements IUserService {
     });
   }
 
-  async findAll(): Promise<IUser[]> {
-    return await this.userRepository.findAll();
+  async findAll(params: UserQueryParams): Promise<[IUser[], number]> {
+    return await this.userRepository.findAll(params);
   }
 
   async findById(id: string): Promise<IUser> {

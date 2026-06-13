@@ -6,3 +6,5 @@ export const login = (credentials: { email: string; password: string }) =>
 export const self = () => api.get('/auth/self');
 
 export const logout = () => api.post('/auth/logout');
+
+export const getUsers = (queryString: string) => api.get(`/users?${queryString}`);

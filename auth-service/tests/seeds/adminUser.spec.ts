@@ -25,7 +25,7 @@ describe('createAdminUser', () => {
     await createAdminUser(userRepository);
     await createAdminUser(userRepository);
 
-    const users = await userRepository.findAll();
+    const [users] = await userRepository.findAll({ currentPage: 1, perPage: 100 });
     const admins = users.filter((u) => u.email === Config.ADMIN_EMAIL);
     expect(admins).toHaveLength(1);
   });

@@ -1,5 +1,5 @@
 import { IUser } from '@/entities/user/iuser.entity';
-import { CreateUserData } from '@/types/user';
+import { CreateUserData, UserQueryParams } from '@/types/user';
 import { UpdateUserDto } from '@/validators/user/update.validator';
 import UserModel from '@/entities/user/user.entity';
 import { IUserRepository } from './IUserRepository';
@@ -17,8 +17,29 @@ export class UserRepository implements IUserRepository {
     return await UserModel.findOne({ email });
   }
 
-  async findAll(): Promise<IUser[]> {
-    return await UserModel.find();
+  async findAll({ currentPage, perPage, q, role }: UserQueryParams): Promise<[IUser[], number]> {
+    const query: Record<string, unknown> = {};
+
+    if (q) {
+      query.$or = [
+        { firstName: { $regex: q, $options: 'i' } },
+        { lastName: { $regex: q, $options: 'i' } },
+        { email: { $regex: q, $options: 'i' } },
+      ];
+    }
+
+    if (role) {
+      query.role = role;
+    }
+
+    const skip = (currentPage - 1) * perPage;
+
+    const [data, total] = await Promise.all([
+      UserModel.find(query).populate('tenant').skip(skip).limit(perPage).sort({ createdAt: -1 }),
+      UserModel.countDocuments(query),
+    ]);
+
+    return [data, total];
   }
 
   async update(id: string, data: UpdateUserDto): Promise<IUser | null> {
