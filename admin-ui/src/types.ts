@@ -4,7 +4,7 @@ export type Credentials = {
 };
 
 export type Tenant = {
-    id: number;
+    id: string;
     name: string;
     address: string;
 };

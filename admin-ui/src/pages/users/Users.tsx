@@ -1,12 +1,20 @@
-import { Breadcrumb, Flex, Spin, Table, Typography } from 'antd';
-import { RightOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Breadcrumb, Button, Drawer, Flex, Form, Space, Spin, Table, Typography, theme } from 'antd';
+import { RightOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Link, Navigate } from 'react-router-dom';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { getUsers } from '../../http/api';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { debounce } from 'lodash';
+import { createUser, getUsers, updateUser } from '../../http/api';
 import { useAuthStore } from '../../store';
 import { PER_PAGE } from '../../constants';
 import type { User } from '../../types';
 import React from 'react';
+import UsersFilter from './UsersFilter';
+import UserForm from './forms/UserForm';
+
+interface FieldData {
+    name: string[];
+    value: unknown;
+}
 
 const columns = [
     {
@@ -38,22 +46,92 @@ const columns = [
 
 const Users = () => {
     const { user } = useAuthStore();
+    const [filterForm] = Form.useForm();
+    const [userForm] = Form.useForm();
+    const queryClient = useQueryClient();
+    const { token: { colorBgLayout } } = theme.useToken();
 
-    const [queryParams, setQueryParams] = React.useState({
+    const [drawerOpen, setDrawerOpen] = React.useState(false);
+    const [currentEditingUser, setCurrentEditingUser] = React.useState<User | null>(null);
+
+    const [queryParams, setQueryParams] = React.useState<{
+        currentPage: number;
+        perPage: number;
+        q?: string;
+        role?: string;
+    }>({
         currentPage: 1,
         perPage: PER_PAGE,
     });
 
+    React.useEffect(() => {
+        if (currentEditingUser) {
+            setDrawerOpen(true);
+            userForm.setFieldsValue({
+                ...currentEditingUser,
+                tenant: currentEditingUser.tenant?.id,
+            });
+        }
+    }, [currentEditingUser, userForm]);
+
     const { data: users, isFetching, isError, error } = useQuery({
         queryKey: ['users', queryParams],
         queryFn: () => {
+            const filteredParams = Object.fromEntries(
+                Object.entries(queryParams).filter(([, v]) => !!v)
+            );
             const queryString = new URLSearchParams(
-                queryParams as unknown as Record<string, string>
+                filteredParams as Record<string, string>
             ).toString();
             return getUsers(queryString).then((res) => res.data);
         },
         placeholderData: keepPreviousData,
     });
+
+    const { mutateAsync: createUserMutate } = useMutation({
+        mutationKey: ['createUser'],
+        mutationFn: (data: Record<string, unknown>) => createUser(data).then((res) => res.data),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] }),
+    });
+
+    const { mutateAsync: updateUserMutate } = useMutation({
+        mutationKey: ['updateUser'],
+        mutationFn: (data: Record<string, unknown>) =>
+            updateUser(currentEditingUser!.id, data).then((res) => res.data),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] }),
+    });
+
+    const onHandleSubmit = async () => {
+        await userForm.validateFields();
+        if (currentEditingUser) {
+            await updateUserMutate(userForm.getFieldsValue());
+        } else {
+            await createUserMutate(userForm.getFieldsValue());
+        }
+        userForm.resetFields();
+        setCurrentEditingUser(null);
+        setDrawerOpen(false);
+    };
+
+    const debouncedSearch = React.useMemo(
+        () =>
+            debounce((value: string | undefined) => {
+                setQueryParams((prev) => ({ ...prev, q: value, currentPage: 1 }));
+            }, 500),
+        []
+    );
+
+    const onFilterChange = (changedFields: FieldData[]) => {
+        const changed = changedFields.reduce(
+            (acc, field) => ({ ...acc, [field.name[0]]: field.value }),
+            {} as Record<string, unknown>
+        );
+        if ('q' in changed) {
+            debouncedSearch(changed.q as string | undefined);
+        } else {
+            setQueryParams((prev) => ({ ...prev, ...changed, currentPage: 1 }));
+        }
+    };
 
     if (user?.role !== 'admin') {
         return <Navigate to="/" replace={true} />;
@@ -70,6 +148,17 @@ const Users = () => {
                 {isError && <Typography.Text type="danger">{error.message}</Typography.Text>}
             </Flex>
 
+            <Form form={filterForm} onFieldsChange={onFilterChange}>
+                <UsersFilter>
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setDrawerOpen(true)}>
+                        Add User
+                    </Button>
+                </UsersFilter>
+            </Form>
+
             <Table
                 columns={[
                     {
@@ -79,6 +168,19 @@ const Users = () => {
                             (queryParams.currentPage - 1) * queryParams.perPage + index + 1,
                     },
                     ...columns,
+                    {
+                        title: 'Actions',
+                        key: 'actions',
+                        render: (_: unknown, record: User) => (
+                            <Space>
+                                <Button
+                                    type="link"
+                                    onClick={() => setCurrentEditingUser(record)}>
+                                    Edit
+                                </Button>
+                            </Space>
+                        ),
+                    },
                 ]}
                 dataSource={users?.data}
                 rowKey="id"
@@ -92,6 +194,37 @@ const Users = () => {
                         `Showing ${range[0]}-${range[1]} of ${total} items`,
                 }}
             />
+
+            <Drawer
+                title={currentEditingUser ? 'Edit User' : 'Add User'}
+                size="large"
+                styles={{ body: { backgroundColor: colorBgLayout } }}
+                destroyOnHidden={true}
+                open={drawerOpen}
+                onClose={() => {
+                    userForm.resetFields();
+                    setCurrentEditingUser(null);
+                    setDrawerOpen(false);
+                }}
+                extra={
+                    <Space>
+                        <Button
+                            onClick={() => {
+                                userForm.resetFields();
+                                setCurrentEditingUser(null);
+                                setDrawerOpen(false);
+                            }}>
+                            Cancel
+                        </Button>
+                        <Button type="primary" onClick={onHandleSubmit}>
+                            Submit
+                        </Button>
+                    </Space>
+                }>
+                <Form layout="vertical" form={userForm}>
+                    <UserForm isEditMode={!!currentEditingUser} />
+                </Form>
+            </Drawer>
         </Flex>
     );
 };
