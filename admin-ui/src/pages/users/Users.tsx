@@ -71,7 +71,15 @@ const Users = () => {
             </Flex>
 
             <Table
-                columns={columns}
+                columns={[
+                    {
+                        title: '#',
+                        key: 'serial',
+                        render: (_: unknown, __: User, index: number) =>
+                            (queryParams.currentPage - 1) * queryParams.perPage + index + 1,
+                    },
+                    ...columns,
+                ]}
                 dataSource={users?.data}
                 rowKey="id"
                 pagination={{
