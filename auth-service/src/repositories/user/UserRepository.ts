@@ -10,7 +10,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async findById(id: string): Promise<IUser | null> {
-    return await UserModel.findById(id);
+    return await UserModel.findById(id).populate('tenant');
   }
 
   async findByEmail(email: string): Promise<IUser | null> {

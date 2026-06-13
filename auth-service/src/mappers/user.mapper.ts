@@ -7,4 +7,5 @@ export const toUserResponse = (user: IUser): UserResponseDto => ({
   lastName: user.lastName,
   email: user.email,
   role: user.role,
+  tenant: typeof user.tenant === 'object' ? user.tenant : null,
 });

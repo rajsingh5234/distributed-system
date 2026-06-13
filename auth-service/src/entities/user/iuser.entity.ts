@@ -1,4 +1,5 @@
 import { UserRole } from '@/types/user';
+import { ITenant } from '../tenant/itenant.entity';
 
 export interface IUser {
   id: string;
@@ -7,5 +8,5 @@ export interface IUser {
   role: UserRole;
   email: string;
   password: string;
-  tenant?: string;
+  tenant?: ITenant | string;
 }

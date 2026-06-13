@@ -191,7 +191,8 @@ describe('POST /users', () => {
 
       // Assert
       const savedUser = await userRepository.findById(response.body.id);
-      expect(savedUser?.tenant?.toString()).toBe(tenantId);
+      const tenant = savedUser?.tenant as { id: string };
+      expect(tenant?.id).toBe(tenantId);
     });
 
     it('should store hashed password in db', async () => {
