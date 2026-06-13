@@ -4,6 +4,8 @@ import { getTenants } from '../../../http/api';
 import type { Tenant } from '../../../types';
 
 const UserForm = ({ isEditMode = false }: { isEditMode: boolean }) => {
+    const selectedRole = Form.useWatch('role');
+
     const { data: tenants } = useQuery({
         queryKey: ['tenants'],
         queryFn: () => getTenants('perPage=100&currentPage=1').then((res) => res.data),
@@ -79,23 +81,25 @@ const UserForm = ({ isEditMode = false }: { isEditMode: boolean }) => {
                                     />
                                 </Form.Item>
                             </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="Restaurant"
-                                    name="tenant"
-                                    rules={[{ required: true, message: 'Restaurant is required' }]}>
-                                    <Select
-                                        size="large"
-                                        style={{ width: '100%' }}
-                                        allowClear={true}
-                                        placeholder="Select restaurant"
-                                        options={(tenants as { data: Tenant[] } | undefined)?.data?.map((tenant) => ({
-                                            label: tenant.name,
-                                            value: tenant.id,
-                                        }))}
-                                    />
-                                </Form.Item>
-                            </Col>
+                            {selectedRole === 'manager' && (
+                                <Col span={12}>
+                                    <Form.Item
+                                        label="Restaurant"
+                                        name="tenant"
+                                        rules={[{ required: true, message: 'Restaurant is required' }]}>
+                                        <Select
+                                            size="large"
+                                            style={{ width: '100%' }}
+                                            allowClear={true}
+                                            placeholder="Select restaurant"
+                                            options={(tenants as { data: Tenant[] } | undefined)?.data?.map((tenant) => ({
+                                                label: tenant.name,
+                                                value: tenant.id,
+                                            }))}
+                                        />
+                                    </Form.Item>
+                                </Col>
+                            )}
                         </Row>
                     </Card>
                 </Flex>
