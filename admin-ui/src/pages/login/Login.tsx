@@ -12,7 +12,10 @@ const Login = () => {
 
     const { refetch: fetchSelf } = useQuery({
         queryKey: ['self'],
-        queryFn: self,
+        queryFn: async () => {
+            const { data } = await self();
+            return data;
+        },
         enabled: false,
     });
 
@@ -27,7 +30,7 @@ const Login = () => {
         mutationFn: (credentials: { email: string; password: string }) => login(credentials),
         onSuccess: async () => {
             const { data } = await fetchSelf();
-            const user = data.data.user;
+            const user = data?.user;
             if (!isAllowed(user)) {
                 logoutMutate();
                 return;
