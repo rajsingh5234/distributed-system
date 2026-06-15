@@ -1,25 +1,39 @@
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from 'http-errors';
-
+import { randomUUID } from 'crypto';
 import { logger } from '@/factories/logger.factory';
 
 const errorHandler = (
-  err: HttpError & { status?: number },
-  _req: Request,
+  err: HttpError,
+  req: Request,
   res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _next: NextFunction
 ) => {
-  const statusCode = err.statusCode || err.status || 500;
+  const errorId = randomUUID();
+  const statusCode = err.status || 500;
+  const isProduction = process.env.NODE_ENV === 'production';
 
-  logger.error(err.message);
+  const message = statusCode === 400 ? err.message : 'Internal server error';
+
+  logger.error(err.message, {
+    id: errorId,
+    statusCode,
+    error: err.stack,
+    path: req.path,
+    method: req.method,
+  });
 
   res.status(statusCode).json({
     errors: [
       {
+        ref: errorId,
         type: err.name,
-        msg: err.message,
-        path: '',
-        location: '',
+        msg: message,
+        path: req.path,
+        method: req.method,
+        location: 'server',
+        stack: isProduction ? null : err.stack,
       },
     ],
   });

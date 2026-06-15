@@ -43,19 +43,19 @@ export class WinstonLogger implements ILogger {
     });
   }
 
-  info(message: string): void {
-    this.logger.info(message);
+  info(message: string, meta?: Record<string, unknown>): void {
+    this.logger.info(message, meta);
   }
 
-  error(message: string): void {
-    this.logger.error(message);
+  error(message: string, meta?: Record<string, unknown>): void {
+    this.logger.error(message, meta);
   }
 
-  warn(message: string): void {
-    this.logger.warn(message);
+  warn(message: string, meta?: Record<string, unknown>): void {
+    this.logger.warn(message, meta);
   }
 
-  debug(message: string): void {
-    this.logger.debug(message);
+  debug(message: string, meta?: Record<string, unknown>): void {
+    this.logger.debug(message, meta);
   }
 }
