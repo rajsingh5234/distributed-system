@@ -19,10 +19,8 @@ class TenantController {
     }
   }
 
-  async getAll(req: Request, res: Response, next: NextFunction) {
-    const currentPage = Number(req.query.currentPage) || 1;
-    const perPage = Number(req.query.perPage) || 6;
-    const q = req.query.q as string | undefined;
+  async getAll(_req: Request, res: Response, next: NextFunction) {
+    const { currentPage, perPage, q } = res.locals.validatedQuery;
 
     try {
       const [tenants, total] = await this.tenantService.findAll({ currentPage, perPage, q });
