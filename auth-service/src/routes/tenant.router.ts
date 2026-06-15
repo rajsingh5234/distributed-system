@@ -6,7 +6,6 @@ import { CreateTenantSchema } from '@/validators/tenant/create.validator';
 import { UpdateTenantSchema } from '@/validators/tenant/update.validator';
 import { TenantParamsSchema } from '@/validators/tenant/params.validator';
 import { ServiceFactory } from '@/factories/service.factory';
-import sanitizeQuery from '@/middlewares/sanitizeQuery';
 import { TenantQuerySchema } from '@/validators/tenant/query.validator';
 import authenticate from '@/middlewares/authenticate';
 import { authorize } from '@/middlewares/authorize';
@@ -26,7 +25,7 @@ router.post(
 );
 router.get(
   '/',
-  sanitizeQuery(TenantQuerySchema),
+  TenantQuerySchema,
   (req, res, next) => tenantController.getAll(req, res, next)
 );
 router.get(
