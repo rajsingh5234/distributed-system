@@ -3,7 +3,7 @@ import { RightOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons'
 import { Link, Navigate } from 'react-router-dom';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { debounce } from 'lodash';
-import { createTenant, getTenants } from '../../http/api';
+import { createTenant, getTenants, updateTenant } from '../../http/api';
 import { useAuthStore } from '../../store';
 import { PER_PAGE } from '../../constants';
 import type { Tenant } from '../../types';
@@ -13,7 +13,7 @@ import TenantForm from './forms/TenantForm';
 
 interface FieldData {
     name: string[];
-    value: unknown;
+    value?: unknown;
 }
 
 const columns = [
@@ -30,6 +30,7 @@ const Restaurants = () => {
     const { token: { colorBgLayout } } = theme.useToken();
 
     const [drawerOpen, setDrawerOpen] = React.useState(false);
+    const [currentEditingTenant, setCurrentEditingTenant] = React.useState<Tenant | null>(null);
 
     const [queryParams, setQueryParams] = React.useState<{
         currentPage: number;
@@ -61,10 +62,22 @@ const Restaurants = () => {
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tenants'] }),
     });
 
+    const { mutateAsync: updateTenantMutate } = useMutation({
+        mutationKey: ['updateTenant'],
+        mutationFn: (data: { name: string; address: string }) =>
+            updateTenant(currentEditingTenant!.id, data).then((res) => res.data),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['tenants'] }),
+    });
+
     const onHandleSubmit = async () => {
         await tenantForm.validateFields();
-        await createTenantMutate(tenantForm.getFieldsValue());
+        if (currentEditingTenant) {
+            await updateTenantMutate(tenantForm.getFieldsValue());
+        } else {
+            await createTenantMutate(tenantForm.getFieldsValue());
+        }
         tenantForm.resetFields();
+        setCurrentEditingTenant(null);
         setDrawerOpen(false);
     };
 
@@ -126,6 +139,21 @@ const Restaurants = () => {
                             (queryParams.currentPage - 1) * queryParams.perPage + index + 1,
                     },
                     ...columns,
+                    {
+                        title: 'Actions',
+                        key: 'actions',
+                        render: (_: unknown, record: Tenant) => (
+                            <Button
+                                type="link"
+                                onClick={() => {
+                                    setCurrentEditingTenant(record);
+                                    tenantForm.setFieldsValue(record);
+                                    setDrawerOpen(true);
+                                }}>
+                                Edit
+                            </Button>
+                        ),
+                    },
                 ]}
                 dataSource={tenants?.data}
                 rowKey="id"
@@ -141,18 +169,19 @@ const Restaurants = () => {
             />
 
             <Drawer
-                title="Add Restaurant"
+                title={currentEditingTenant ? 'Edit Restaurant' : 'Add Restaurant'}
                 size="large"
                 styles={{ body: { backgroundColor: colorBgLayout } }}
                 destroyOnHidden={true}
                 open={drawerOpen}
                 onClose={() => {
                     tenantForm.resetFields();
+                    setCurrentEditingTenant(null);
                     setDrawerOpen(false);
                 }}
                 extra={
                     <Space>
-                        <Button onClick={() => { tenantForm.resetFields(); setDrawerOpen(false); }}>
+                        <Button onClick={() => { tenantForm.resetFields(); setCurrentEditingTenant(null); setDrawerOpen(false); }}>
                             Cancel
                         </Button>
                         <Button type="primary" onClick={onHandleSubmit}>

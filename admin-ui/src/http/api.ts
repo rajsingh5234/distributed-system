@@ -18,3 +18,6 @@ export const getTenants = (queryString: string) => api.get(`/tenants?${queryStri
 
 export const createTenant = (data: { name: string; address: string }) =>
     api.post('/tenants', data);
+
+export const updateTenant = (id: string, data: { name: string; address: string }) =>
+    api.patch(`/tenants/${id}`, data);

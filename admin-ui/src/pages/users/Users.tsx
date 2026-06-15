@@ -13,7 +13,7 @@ import UserForm from './forms/UserForm';
 
 interface FieldData {
     name: string[];
-    value: unknown;
+    value?: unknown;
 }
 
 const columns = [
