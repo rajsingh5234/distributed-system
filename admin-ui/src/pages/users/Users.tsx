@@ -64,16 +64,6 @@ const Users = () => {
         perPage: PER_PAGE,
     });
 
-    React.useEffect(() => {
-        if (currentEditingUser) {
-            setDrawerOpen(true);
-            userForm.setFieldsValue({
-                ...currentEditingUser,
-                tenant: currentEditingUser.tenant?.id,
-            });
-        }
-    }, [currentEditingUser, userForm]);
-
     const { data: users, isFetching, isError, error } = useQuery({
         queryKey: ['users', queryParams],
         queryFn: () => {
@@ -175,7 +165,14 @@ const Users = () => {
                             <Space>
                                 <Button
                                     type="link"
-                                    onClick={() => setCurrentEditingUser(record)}>
+                                    onClick={() => {
+                                        setCurrentEditingUser(record);
+                                        userForm.setFieldsValue({
+                                            ...record,
+                                            tenant: record.tenant?.id,
+                                        });
+                                        setDrawerOpen(true);
+                                    }}>
                                     Edit
                                 </Button>
                             </Space>
